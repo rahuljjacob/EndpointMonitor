@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+starlette
+python-multipart
+typing-extensions
+psycopg2
+dotenv
+confluent_kafka

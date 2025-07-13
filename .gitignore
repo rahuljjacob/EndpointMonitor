@@ -1,0 +1,56 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.env
+*.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code
+.vscode/
+
+# IDEs
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Virtual Environment
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+
+# MongoDB Dump Files
+dump/
+
+# Kafka Data (if local files used)
+*.kafka-log
+
+# Misc
+*.db
+*.sqlite3
+
+# Secrets
+.env
+.env.*
+
+# FastAPI specific
+instance/
+
+# Pratham env file
+./api-server/.env
+
+#pwds
+pwds
