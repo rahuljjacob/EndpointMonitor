@@ -1,4 +1,4 @@
-# 🧠 Kafka Logging Middleware (FastAPI)
+# EndpointMonitor
 
 A minimal FastAPI app that logs API requests (and errors) to **Apache Kafka** using a custom middleware.
 
