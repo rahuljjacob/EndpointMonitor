@@ -1,114 +1,107 @@
-# EndpointMonitor
+# monitorize: Application Monitoring Dashboard
 
-A minimal FastAPI app that logs API requests (and errors) to **Apache Kafka** using a custom middleware.
+Monitorize is a containerized, real-time API monitoring and logging system built with FastAPI, Kafka, PostgreSQL, and Grafana. It logs every API request, stores logs in a database, and visualizes them with Grafana dashboards. The system is orchestrated using Docker Compose for easy deployment.
 
-## 🎯 Features
+## Architecture
 
-- Intercepts and logs requests/responses using Starlette middleware
-- Sends structured logs to Kafka using `confluent_kafka`
-- Observes logs via a Kafka consumer
-- Tests various request types and error conditions
-
-## 📦 Requirements
-
-- Python 3.8+
-- Docker and Docker Compose
-- FastAPI and its dependencies
-- Apache Kafka
-
-## 🗂️ Project Structure
-
-```plaintext
-api-server/
-├── main.py                 # FastAPI application
-├── middlewares/
-│   ├── __init__.py
-│   └── logging_middleware.py   # Logging middleware
-├── kafka/
-│   └── kafka_producer.py   # Kafka producer logic
-├── test_producer.py        # Manual log sender
-├── test_consumer.py        # Kafka log listener
-├── requirements.txt        # Python dependencies
-├── docker-compose.yml      # Docker services configuration
-└── README.md              # Project documentation
+```
+[Client/Simulator]
+      |
+      v
+ [FastAPI App] --(logs)--> [Kafka] --(logs)--> [Kafka Consumer] --(logs)--> [PostgreSQL]
+      |                                                           |
+      |                                                           v
+      |                                                      [Grafana]
+      |
+      v
+[simulate_requests.py]
 ```
 
-## 🚀 Getting Started
+- **FastAPI**: Handles API requests and logs them via middleware.
+- **Kafka**: Message broker for log entries.
+- **Kafka Consumer**: Reads logs from Kafka and writes to PostgreSQL.
+- **PostgreSQL**: Stores all API logs.
+- **Grafana**: Visualizes logs and metrics from PostgreSQL.
+- **simulate_requests.py**: Generates test traffic for the API.
 
-1. Clone the repository and navigate to the project directory:
+## Features
 
-   ```bash
-   git clone <repository-url>
-   cd api-server
-   ```
+- Real-time logging of all API requests (method, endpoint, status, response time, client IP, etc.)
+- Log transport via Kafka for scalability
+- Persistent storage of logs in PostgreSQL
+- Grafana dashboard for visualization
+- Fully containerized with Docker Compose
 
-2. Install dependencies:
+## Setup & Usage
 
-   ```bash
-   pip install -r requirements.txt
-   ```
+### Prerequisites
 
-3. Start Kafka and Zookeeper services:
+- Docker & Docker Compose installed
+- Python 3.9+
 
-   ```bash
-   docker-compose up -d
-   ```
+### Environment Variables
 
-4. Run the FastAPI server:
+Create a `.env` file in the project root with the following (example):
 
-   ```bash
-   uvicorn main:app --reload
-   ```
+```
+POSTGRES_USER=youruser
+POSTGRES_PASSWORD=yourpassword
+POSTGRES_DB=logsdb
+PGADMIN_DEFAULT_EMAIL=admin@example.com
+PGADMIN_DEFAULT_PASSWORD=adminpass
+GF_SECURITY_ADMIN_USER=admin
+GF_SECURITY_ADMIN_PASSWORD=admin
+```
 
-5. (Optional) Start the Kafka consumer to monitor logs:
-   ```bash
-   python test_consumer.py
-   ```
-
-## 🔍 API Endpoints
-
-| Endpoint           | Method | Description                 |
-| ------------------ | ------ | --------------------------- |
-| `/ping`            | GET    | Health check endpoint       |
-| `/users/{user_id}` | GET    | Get user details by ID      |
-| `/submit`          | POST   | Submit data with validation |
-| `/error`           | GET    | Test error logging          |
-
-### Example API Requests
-
-#### Health Check
+### Running the System
 
 ```bash
-curl http://localhost:8000/ping
+docker-compose up --build
 ```
 
-#### Submit Data
+- FastAPI app: [http://localhost:8000](http://localhost:8000)
+- Grafana: [http://localhost:3000](http://localhost:3000)
+- pgAdmin: [http://localhost:5050](http://localhost:5050)
+
+### Simulating Requests
+
+In a separate terminal, run:
 
 ```bash
-curl -X POST http://localhost:8000/submit \
-  -H "Content-Type: application/json" \
-  -d '{"title": "Kafka Magic", "content": "Logging is awesome!"}'
+python simulate_requests.py
 ```
 
-## 🔧 Configuration
+This will continuously send GET and POST requests to the FastAPI app, generating logs and errors for demo purposes.
 
-The application uses Docker Compose to set up Kafka and Zookeeper with the following configurations:
+## File Structure
 
-- Zookeeper: Port 2181
-- Kafka: Port 9092
+- `main.py` — FastAPI app with logging middleware
+- `simulate_requests.py` — Request generator for testing
+- `kafka/kafka_producer.py` — Sends logs to Kafka
+- `kafka/kafka_consumer.py` — Consumes logs and writes to PostgreSQL
+- `grafana/dashboard.json` — Grafana dashboard config
+- `docker-compose.yml` — Orchestrates all services
+- `Dockerfile.fastapi` — FastAPI app container
+- `kafka/Dockerfile` — Kafka consumer container
+- `requirements.txt` — Python dependencies for FastAPI app
+- `kafka/requirements.txt` — Python dependencies for Kafka consumer
 
-## 🧪 Testing
+## Endpoints (FastAPI)
 
-Use `test_producer.py` to manually send test log messages with different severity levels:
+- `GET /` — Home page
+- `GET /ping` — Health check
+- `GET /users/{user_id}` — Get user info (positive integers only)
+- `POST /submit` — Submit data (requires `title` and `content`)
+- `GET /error` — Simulate an error (for testing)
+- `GET /version` — API version info
+- `GET /status` — System status
 
-```bash
-python test_producer.py
-```
+## Technologies Used
 
-## 🤝 Contributing
+- **FastAPI** (Python web framework)
+- **Kafka** (message broker)
+- **PostgreSQL** (database)
+- **Grafana** (visualization)
+- **Docker Compose** (orchestration)
+- **pgAdmin** (PostgreSQL admin UI)
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
