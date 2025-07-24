@@ -1,6 +1,6 @@
-# monitorize: Application Monitoring Dashboard
+# EndpointMonitor : Application Monitoring Dashboard
 
-Monitorize is a containerized, real-time API monitoring and logging system built with FastAPI, Kafka, PostgreSQL, and Grafana. It logs every API request, stores logs in a database, and visualizes them with Grafana dashboards. The system is orchestrated using Docker Compose for easy deployment.
+EndpointMonitor is a containerized, real-time API monitoring and logging system built with FastAPI, Kafka, PostgreSQL, and Grafana. It logs every API request, stores logs in a database, and visualizes them with Grafana dashboards. The system is orchestrated using Docker Compose for easy deployment.
 
 ## Architecture
 
@@ -104,4 +104,3 @@ This will continuously send GET and POST requests to the FastAPI app, generating
 - **Grafana** (visualization)
 - **Docker Compose** (orchestration)
 - **pgAdmin** (PostgreSQL admin UI)
-
